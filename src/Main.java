@@ -10,6 +10,7 @@ public class Main {
             a[i] = rnd.nextInt(10000);
         }
 
+        // MergeSort
         int[] m = a.clone();
         int[] expected = a.clone();
         Arrays.sort(expected);
@@ -18,6 +19,7 @@ public class Main {
         System.out.println("MergeSort correct: " + Arrays.equals(m, expected));
         System.out.println("  comparisons: " + ms.comparisons + ", depth: " + ms.maxDepth);
 
+        // QuickSort
         testQuick("random", a);
 
         int[] sorted = a.clone();
@@ -38,6 +40,28 @@ public class Main {
 
         testQuick("empty", new int[0]);
         testQuick("single", new int[]{7});
+
+        // Deterministic Select
+        Random selRnd = new Random(7);
+        int failures = 0;
+        for (int t = 0; t < 100; t++) {
+            int n = 1 + selRnd.nextInt(2000);
+            int[] arr = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = selRnd.nextInt(500);
+            }
+            int k = selRnd.nextInt(n);
+            int[] sortedCopy = arr.clone();
+            Arrays.sort(sortedCopy);
+
+            DeterministicSelector sel = new DeterministicSelector();
+            int result = sel.select(arr.clone(), k);
+            if (result != sortedCopy[k]) {
+                failures++;
+                System.out.println("FAIL n=" + n + " k=" + k);
+            }
+        }
+        System.out.println("Select: 100 tests, failures: " + failures);
     }
 
     static void testQuick(String name, int[] input) {
