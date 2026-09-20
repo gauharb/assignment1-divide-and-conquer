@@ -62,6 +62,37 @@ public class Main {
             }
         }
         System.out.println("Select: 100 tests, failures: " + failures);
+
+        // Closest Pair
+        Random cpRnd = new Random(99);
+        int cpFailures = 0;
+        for (int t = 0; t < 50; t++) {
+            int n = 2 + cpRnd.nextInt(500);
+            Point[] pts = new Point[n];
+            for (int i = 0; i < n; i++) {
+
+                pts[i] = new Point(cpRnd.nextInt(200), cpRnd.nextInt(200));
+            }
+            ClosestPairSolver solver = new ClosestPairSolver();
+            solver.solve(pts);
+            double fast = solver.getBestDistance();
+            double slow = bruteForce(pts);
+            if (Math.abs(fast - slow) > 1e-9) {
+                cpFailures++;
+                System.out.println("FAIL closest n=" + n + " fast=" + fast + " slow=" + slow);
+            }
+        }
+        System.out.println("ClosestPair: 50 tests, failures: " + cpFailures);
+    }
+
+    static double bruteForce(Point[] pts) {
+        double best = Double.POSITIVE_INFINITY;
+        for (int i = 0; i < pts.length; i++) {
+            for (int j = i + 1; j < pts.length; j++) {
+                best = Math.min(best, Point.distance(pts[i], pts[j]));
+            }
+        }
+        return best;
     }
 
     static void testQuick(String name, int[] input) {
